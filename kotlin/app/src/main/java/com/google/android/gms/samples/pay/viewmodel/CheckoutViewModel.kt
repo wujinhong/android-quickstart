@@ -29,6 +29,8 @@ import com.google.android.gms.wallet.IsReadyToPayRequest
 import com.google.android.gms.wallet.PaymentData
 import com.google.android.gms.wallet.PaymentDataRequest
 import com.google.android.gms.wallet.PaymentsClient
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -36,12 +38,17 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.concurrent.Executor
 import kotlin.coroutines.resume
 
-class CheckoutViewModel(application: Application) : AndroidViewModel(application) {
+class CheckoutViewModel(
+    application: Application
+) : AndroidViewModel(application) {
+
+    private val dispatcher: CoroutineDispatcher = Dispatchers.Default
 
     private val _paymentUiState: MutableStateFlow<PaymentUiState> =
         MutableStateFlow(PaymentUiState.NotStarted)
@@ -62,7 +69,8 @@ class CheckoutViewModel(application: Application) : AndroidViewModel(application
     ) */
     private suspend fun verifyGooglePayReadiness() {
         val newUiState: PaymentUiState = try {
-            if (fetchCanUseGooglePay()) {
+            val canUseGooglePay = withContext(dispatcher) { fetchCanUseGooglePay() }
+            if (canUseGooglePay) {
                 PaymentUiState.Available
             } else {
                 PaymentUiState.Error(CommonStatusCodes.ERROR)
@@ -122,15 +130,15 @@ class CheckoutViewModel(application: Application) : AndroidViewModel(application
             // Token will be null if PaymentDataRequest was not constructed using fromJson(String).
             val paymentMethodData =
                 JSONObject(paymentInformation).getJSONObject("paymentMethodData")
-            val billingName = paymentMethodData.getJSONObject("info")
-                .getJSONObject("billingAddress").getString("name")
+            val billingName =
+                paymentMethodData.getJSONObject("info").getJSONObject("billingAddress")
+                    .getString("name")
             Log.d("BillingName", billingName)
 
             // Logging token string.
             Log.d(
-                "Google Pay token", paymentMethodData
-                    .getJSONObject("tokenizationData")
-                    .getString("token")
+                "Google Pay token",
+                paymentMethodData.getJSONObject("tokenizationData").getString("token")
             )
 
             return billingName
