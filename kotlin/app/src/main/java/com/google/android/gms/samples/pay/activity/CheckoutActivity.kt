@@ -31,9 +31,7 @@ import com.google.android.gms.samples.pay.viewmodel.CheckoutViewModel
 import com.google.android.gms.samples.pay.viewmodel.PaymentUiState
 import com.google.android.gms.samples.pay.viewmodel.awaitTask
 import com.google.android.gms.wallet.contract.TaskResultContracts.GetPaymentDataResult
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class CheckoutActivity : ComponentActivity() {
 
@@ -69,9 +67,7 @@ class CheckoutActivity : ComponentActivity() {
 
     private fun requestPayment() {
         lifecycleScope.launch {
-            val task = withContext(Dispatchers.IO) {
-                model.getLoadPaymentDataTask(priceLabel = "50.2").awaitTask()
-            }
+            val task = model.getLoadPaymentDataTask(priceLabel = "50.2").awaitTask()
             paymentDataLauncher.launch(task)
         }
     }
