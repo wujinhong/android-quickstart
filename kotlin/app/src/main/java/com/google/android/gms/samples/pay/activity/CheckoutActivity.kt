@@ -25,29 +25,28 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.common.api.CommonStatusCodes
-import com.google.android.gms.wallet.contract.TaskResultContracts.GetPaymentDataResult
 import com.google.android.gms.samples.pay.R
 import com.google.android.gms.samples.pay.ui.ProductScreen
 import com.google.android.gms.samples.pay.viewmodel.CheckoutViewModel
 import com.google.android.gms.samples.pay.viewmodel.PaymentUiState
 import com.google.android.gms.samples.pay.viewmodel.awaitTask
+import com.google.android.gms.wallet.contract.TaskResultContracts.GetPaymentDataResult
 import kotlinx.coroutines.launch
 
 class CheckoutActivity : ComponentActivity() {
 
-    private val paymentDataLauncher = registerForActivityResult(GetPaymentDataResult()) { taskResult ->
-        when (taskResult.status.statusCode) {
-            CommonStatusCodes.SUCCESS -> {
-                taskResult.result!!.let {
+    private val paymentDataLauncher =
+        registerForActivityResult(GetPaymentDataResult()) { taskResult ->
+            when (taskResult.status.statusCode) {
+                CommonStatusCodes.SUCCESS -> taskResult.result!!.let {
                     Log.i("Google Pay result:", it.toJson())
                     model.setPaymentData(it)
                 }
+                //CommonStatusCodes.CANCELED -> The user canceled
+                //CommonStatusCodes.DEVELOPER_ERROR -> The API returned an error (it.status: Status)
+                //else -> Handle internal and other unexpected errors
             }
-            //CommonStatusCodes.CANCELED -> The user canceled
-            //CommonStatusCodes.DEVELOPER_ERROR -> The API returned an error (it.status: Status)
-            //else -> Handle internal and other unexpected errors
         }
-    }
 
     private val model: CheckoutViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
