@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google Inc.
+ * Copyright 2024 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,11 +79,11 @@ public class CheckoutViewModel extends AndroidViewModel {
     /**
      * Creates a Task that starts the payment process with the transaction details included.
      *
-     * @param priceCents the price to show on the payment sheet.
+     * @param priceLabel the price to show on the payment sheet.
      * @return a Task with the payment information.
      */
-    public Task<PaymentData> getLoadPaymentDataTask(final long priceCents) {
-        JSONObject paymentDataRequestJson = PaymentsUtil.getPaymentDataRequest(priceCents);
+    public Task<PaymentData> getLoadPaymentDataTask(String priceLabel) {
+        JSONObject paymentDataRequestJson = PaymentsUtil.getPaymentDataRequest(priceLabel);
         if (paymentDataRequestJson == null) {
             return null;
         }

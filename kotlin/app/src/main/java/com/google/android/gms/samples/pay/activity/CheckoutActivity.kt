@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google Inc.
+ * Copyright 2024 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,8 +44,8 @@ class CheckoutActivity : ComponentActivity() {
                 }
             }
             //CommonStatusCodes.CANCELED -> The user canceled
-            //AutoResolveHelper.RESULT_ERROR -> The API returned an error (it.status: Status)
-            //CommonStatusCodes.INTERNAL_ERROR -> Handle other unexpected errors
+            //CommonStatusCodes.DEVELOPER_ERROR -> The API returned an error (it.status: Status)
+            //else -> Handle internal and other unexpected errors
         }
     }
 

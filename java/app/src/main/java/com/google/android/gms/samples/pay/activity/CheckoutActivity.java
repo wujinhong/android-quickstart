@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Google Inc.
+ * Copyright 2024 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,6 @@ import com.google.android.gms.samples.pay.databinding.ActivityCheckoutBinding;
 import com.google.android.gms.samples.pay.util.PaymentsUtil;
 import com.google.android.gms.samples.pay.viewmodel.CheckoutViewModel;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.wallet.AutoResolveHelper;
 import com.google.android.gms.wallet.PaymentData;
 import com.google.android.gms.wallet.button.ButtonOptions;
 import com.google.android.gms.wallet.button.PayButton;
@@ -62,10 +61,10 @@ public class CheckoutActivity extends AppCompatActivity {
             handlePaymentSuccess(result.getResult());
             break;
           //case CommonStatusCodes.CANCELED: The user canceled
-          case AutoResolveHelper.RESULT_ERROR:
+          case CommonStatusCodes.DEVELOPER_ERROR:
             handleError(statusCode, result.getStatus().getStatusMessage());
             break;
-          case CommonStatusCodes.INTERNAL_ERROR:
+          default:
             handleError(statusCode, "Unexpected non API" +
                 " exception when trying to deliver the task result to an activity!");
             break;
@@ -124,7 +123,7 @@ public class CheckoutActivity extends AppCompatActivity {
 
   public void requestPayment(View view) {
     // The price provided to the API should include taxes and shipping.
-    final Task<PaymentData> task = model.getLoadPaymentDataTask(1000L);
+    final Task<PaymentData> task = model.getLoadPaymentDataTask("50.2");
     task.addOnCompleteListener(paymentDataLauncher::launch);
   }
 

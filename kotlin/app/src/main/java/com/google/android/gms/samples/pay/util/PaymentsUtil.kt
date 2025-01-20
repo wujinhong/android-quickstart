@@ -33,7 +33,6 @@ import java.math.BigDecimal
  * relevant to your implementation.
  */
 object PaymentsUtil {
-    val CENTS = BigDecimal(100)
 
     /**
      * Create a Google Pay API base request object with properties used in all requests.
