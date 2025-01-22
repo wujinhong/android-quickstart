@@ -157,7 +157,7 @@ abstract class PaymentUiState internal constructor() {
     class Error(val code: Int, val message: String? = null) : PaymentUiState()
 }
 
-suspend fun <T> Task<T>.awaitTask(cancellationTokenSource: CancellationTokenSource? = null): Task<T> {
+suspend fun <T> Task<T>.awaitTask(cancellationTokenSource: CancellationTokenSource?): Task<T> {
     return if (isComplete) this else suspendCancellableCoroutine { cont ->
         // Run the callback directly to avoid unnecessarily scheduling on the main thread.
         addOnCompleteListener(DirectExecutor, cont::resume)
